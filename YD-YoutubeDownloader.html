@@ -1,0 +1,807 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>YD-YoutubeDownloader - YouTube 视频下载神器</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+  <style>
+    :root {
+      --primary: #ff0000;
+      --primary-dark: #cc0000;
+      --secondary: #282828;
+      --accent: #ff6b6b;
+      --bg-dark: #121212;
+      --bg-card: #1e1e1e;
+      --text-primary: #ffffff;
+      --text-secondary: #b3b3b3;
+      --gradient: linear-gradient(135deg, #ff0000 0%, #ff6b6b 100%);
+      --shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
+      --transition: all 0.3s ease;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif;
+      background: var(--bg-dark);
+      color: var(--text-primary);
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    /* 导航栏 */
+    .navbar {
+      position: fixed;
+      top: 0;
+      width: 100%;
+      padding: 1rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: rgba(18, 18, 18, 0.95);
+      backdrop-filter: blur(10px);
+      z-index: 1000;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      text-decoration: none;
+    }
+
+    .logo i {
+      color: var(--primary);
+      font-size: 1.8rem;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 2rem;
+      list-style: none;
+    }
+
+    .nav-links a {
+      color: var(--text-secondary);
+      text-decoration: none;
+      font-weight: 500;
+      transition: var(--transition);
+      position: relative;
+    }
+
+    .nav-links a:hover {
+      color: var(--primary);
+    }
+
+    .nav-links a::after {
+      content: '';
+      position: absolute;
+      bottom: -5px;
+      left: 0;
+      width: 0;
+      height: 2px;
+      background: var(--gradient);
+      transition: var(--transition);
+    }
+
+    .nav-links a:hover::after {
+      width: 100%;
+    }
+
+    /* 英雄区域 */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 6rem 2rem 4rem;
+      background: 
+        radial-gradient(ellipse at top, rgba(255,0,0,0.15) 0%, transparent 70%),
+        radial-gradient(ellipse at bottom right, rgba(255,107,107,0.1) 0%, transparent 70%);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero::before {
+      content: '';
+      position: absolute;
+      width: 600px;
+      height: 600px;
+      border-radius: 50%;
+      background: var(--gradient);
+      filter: blur(150px);
+      opacity: 0.15;
+      animation: float 20s infinite ease-in-out;
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translate(0, 0); }
+      50% { transform: translate(30px, -30px); }
+    }
+
+    .hero-content {
+      max-width: 1200px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 4rem;
+      align-items: center;
+      position: relative;
+      z-index: 1;
+    }
+
+    .hero-text h1 {
+      font-size: 3.5rem;
+      font-weight: 800;
+      margin-bottom: 1rem;
+      background: var(--gradient);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      line-height: 1.1;
+    }
+
+    .hero-text .subtitle {
+      font-size: 1.3rem;
+      color: var(--text-secondary);
+      margin-bottom: 2rem;
+      max-width: 500px;
+    }
+
+    .hero-text .tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: rgba(255,0,0,0.15);
+      color: var(--primary);
+      padding: 0.5rem 1rem;
+      border-radius: 50px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      margin-bottom: 1.5rem;
+    }
+
+    .btn-group {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      padding: 1rem 2rem;
+      border-radius: 50px;
+      font-weight: 600;
+      font-size: 1rem;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      transition: var(--transition);
+      cursor: pointer;
+      border: none;
+    }
+
+    .btn-primary {
+      background: var(--gradient);
+      color: white;
+      box-shadow: 0 4px 20px rgba(255, 0, 0, 0.4);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 30px rgba(255, 0, 0, 0.6);
+    }
+
+    .btn-secondary {
+      background: var(--bg-card);
+      color: var(--text-primary);
+      border: 2px solid rgba(255,255,255,0.2);
+    }
+
+    .btn-secondary:hover {
+      border-color: var(--primary);
+      transform: translateY(-3px);
+    }
+
+    .hero-visual {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .app-preview {
+      width: 100%;
+      max-width: 500px;
+      background: var(--bg-card);
+      border-radius: 20px;
+      padding: 1.5rem;
+      box-shadow: var(--shadow);
+      border: 1px solid rgba(255,255,255,0.1);
+      animation: slideIn 0.8s ease-out;
+    }
+
+    @keyframes slideIn {
+      from {
+        opacity: 0;
+        transform: translateX(50px);
+      }
+      to {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
+
+    .preview-header {
+      display: flex;
+      gap: 0.5rem;
+      margin-bottom: 1rem;
+    }
+
+    .preview-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+    }
+    .preview-dot.red { background: #ff5f57; }
+    .preview-dot.yellow { background: #ffbd2e; }
+    .preview-dot.green { background: #28c940; }
+
+    .preview-body {
+      background: var(--secondary);
+      border-radius: 12px;
+      padding: 1.5rem;
+      min-height: 250px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      gap: 1rem;
+    }
+
+    .preview-body i {
+      font-size: 4rem;
+      color: var(--primary);
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.1); opacity: 0.8; }
+    }
+
+    .preview-body p {
+      color: var(--text-secondary);
+      font-size: 0.95rem;
+    }
+
+    .preview-url {
+      width: 100%;
+      background: rgba(255,255,255,0.1);
+      border: none;
+      padding: 0.8rem 1rem;
+      border-radius: 8px;
+      color: var(--text-primary);
+      font-size: 0.9rem;
+      margin-bottom: 1rem;
+    }
+
+    .preview-url::placeholder {
+      color: var(--text-secondary);
+    }
+
+    /* 特性区域 */
+    .features {
+      padding: 6rem 2rem;
+      background: var(--secondary);
+    }
+
+    .section-header {
+      text-align: center;
+      max-width: 700px;
+      margin: 0 auto 4rem;
+    }
+
+    .section-header h2 {
+      font-size: 2.5rem;
+      margin-bottom: 1rem;
+    }
+
+    .section-header p {
+      color: var(--text-secondary);
+      font-size: 1.1rem;
+    }
+
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 2rem;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .feature-card {
+      background: var(--bg-card);
+      padding: 2rem;
+      border-radius: 16px;
+      border: 1px solid rgba(255,255,255,0.1);
+      transition: var(--transition);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .feature-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 4px;
+      background: var(--gradient);
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: var(--transition);
+    }
+
+    .feature-card:hover {
+      transform: translateY(-8px);
+      box-shadow: var(--shadow);
+    }
+
+    .feature-card:hover::before {
+      transform: scaleX(1);
+    }
+
+    .feature-icon {
+      width: 60px;
+      height: 60px;
+      background: rgba(255,0,0,0.15);
+      border-radius: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 1.5rem;
+      font-size: 1.5rem;
+      color: var(--primary);
+    }
+
+    .feature-card h3 {
+      font-size: 1.3rem;
+      margin-bottom: 0.8rem;
+    }
+
+    .feature-card p {
+      color: var(--text-secondary);
+      font-size: 0.95rem;
+    }
+
+    /* 使用说明 */
+    .how-to {
+      padding: 6rem 2rem;
+      background: var(--bg-dark);
+    }
+
+    .steps {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 2rem;
+      max-width: 1000px;
+      margin: 0 auto;
+      counter-reset: step;
+    }
+
+    .step {
+      text-align: center;
+      padding: 2rem;
+      position: relative;
+    }
+
+    .step::before {
+      counter-increment: step;
+      content: counter(step);
+      position: absolute;
+      top: -20px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 40px;
+      height: 40px;
+      background: var(--gradient);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 1.2rem;
+    }
+
+    .step i {
+      font-size: 2.5rem;
+      color: var(--primary);
+      margin-bottom: 1.5rem;
+    }
+
+    .step h3 {
+      margin-bottom: 0.8rem;
+      font-size: 1.2rem;
+    }
+
+    .step p {
+      color: var(--text-secondary);
+      font-size: 0.95rem;
+    }
+
+    /* 技术栈 */
+    .tech-stack {
+      padding: 4rem 2rem;
+      background: var(--secondary);
+      text-align: center;
+    }
+
+    .tech-cards {
+      display: flex;
+      justify-content: center;
+      gap: 2rem;
+      flex-wrap: wrap;
+      max-width: 800px;
+      margin: 2rem auto 0;
+    }
+
+    .tech-card {
+      background: var(--bg-card);
+      padding: 1.5rem 2.5rem;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+      border: 1px solid rgba(255,255,255,0.1);
+      transition: var(--transition);
+    }
+
+    .tech-card:hover {
+      border-color: var(--primary);
+      transform: translateY(-3px);
+    }
+
+    .tech-card i {
+      font-size: 1.5rem;
+      color: var(--primary);
+    }
+
+    /* CTA 区域 */
+    .cta {
+      padding: 5rem 2rem;
+      text-align: center;
+      background: var(--gradient);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .cta::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: 
+        radial-gradient(circle at 20% 80%, rgba(255,255,255,0.2) 0%, transparent 50%),
+        radial-gradient(circle at 80% 20%, rgba(255,255,255,0.15) 0%, transparent 50%);
+    }
+
+    .cta-content {
+      position: relative;
+      z-index: 1;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    .cta h2 {
+      font-size: 2.2rem;
+      margin-bottom: 1rem;
+    }
+
+    .cta p {
+      color: rgba(255,255,255,0.9);
+      margin-bottom: 2rem;
+      font-size: 1.1rem;
+    }
+
+    .btn-white {
+      background: white;
+      color: var(--primary);
+      padding: 1rem 2.5rem;
+      border-radius: 50px;
+      font-weight: 700;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      transition: var(--transition);
+    }
+
+    .btn-white:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    }
+
+    /* 页脚 */
+    .footer {
+      padding: 3rem 2rem;
+      background: var(--bg-card);
+      text-align: center;
+      border-top: 1px solid rgba(255,255,255,0.1);
+    }
+
+    .footer-links {
+      display: flex;
+      justify-content: center;
+      gap: 2rem;
+      margin-bottom: 1.5rem;
+      flex-wrap: wrap;
+    }
+
+    .footer-links a {
+      color: var(--text-secondary);
+      text-decoration: none;
+      transition: var(--transition);
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .footer-links a:hover {
+      color: var(--primary);
+    }
+
+    .copyright {
+      color: var(--text-secondary);
+      font-size: 0.9rem;
+    }
+
+    /* 响应式 */
+    @media (max-width: 968px) {
+      .hero-content {
+        grid-template-columns: 1fr;
+        text-align: center;
+      }
+      
+      .hero-text h1 {
+        font-size: 2.8rem;
+      }
+      
+      .hero-text .subtitle {
+        margin: 0 auto 2rem;
+      }
+      
+      .btn-group {
+        justify-content: center;
+      }
+      
+      .nav-links {
+        display: none;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .hero-text h1 {
+        font-size: 2.2rem;
+      }
+      
+      .section-header h2 {
+        font-size: 2rem;
+      }
+      
+      .btn {
+        width: 100%;
+        justify-content: center;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- 导航栏 -->
+  <nav class="navbar">
+    <a href="#" class="logo">
+      <i class="fab fa-youtube"></i>
+      YD-Downloader
+    </a>
+    <ul class="nav-links">
+      <li><a href="#features">功能</a></li>
+      <li><a href="#howto">使用</a></li>
+      <li><a href="#tech">技术</a></li>
+      <li><a href="https://github.com/xinpenghan/YD-YoutubeDownloader" target="_blank">GitHub</a></li>
+    </ul>
+  </nav>
+
+  <!-- 英雄区域 -->
+  <section class="hero">
+    <div class="hero-content">
+      <div class="hero-text">
+        <span class="tag">🔥 全新升级 · 稳定版本</span>
+        <h1>YD-YoutubeDownloader</h1>
+        <p class="subtitle">一款强大的 YouTube 视频下载工具，支持视频、播放列表和频道批量下载，独家支持 SOCKS5 代理</p>
+        <div class="btn-group">
+          <a href="#" class="btn btn-primary">
+            <i class="fas fa-download"></i> 立即下载
+          </a>
+          <a href="#howto" class="btn btn-secondary">
+            <i class="fas fa-play-circle"></i> 查看教程
+          </a>
+        </div>
+      </div>
+      <div class="hero-visual">
+        <div class="app-preview">
+          <div class="preview-header">
+            <div class="preview-dot red"></div>
+            <div class="preview-dot yellow"></div>
+            <div class="preview-dot green"></div>
+          </div>
+          <div class="preview-body">
+            <i class="fab fa-youtube"></i>
+            <input type="text" class="preview-url" placeholder="粘贴 YouTube 视频/播放列表/频道链接..." disabled/>
+            <p>✨ 支持多种格式选择 · SOCKS5 代理</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 功能特性 -->
+  <section class="features" id="features">
+    <div class="section-header">
+      <h2>✨ 核心功能</h2>
+      <p>专为高效下载设计，让 YouTube 内容获取更简单</p>
+    </div>
+    <div class="features-grid">
+      <div class="feature-card">
+        <div class="feature-icon">
+          <i class="fas fa-link"></i>
+        </div>
+        <h3>一键粘贴下载</h3>
+        <p>复制任意 YouTube 视频、播放列表或频道链接，粘贴即可开始下载，操作简单直观</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">
+          <i class="fas fa-cog"></i>
+        </div>
+        <h3>多格式支持</h3>
+        <p>自由选择下载格式，支持 MP4、WEBM、MP3 等多种音视频格式，满足不同场景需求</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">
+          <i class="fas fa-shield-alt"></i>
+        </div>
+        <h3>SOCKS5 代理</h3>
+        <p>独家支持 SOCKS5 协议代理，保障下载稳定性和隐私安全，其他软件难以比拟</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">
+          <i class="fas fa-list"></i>
+        </div>
+        <h3>批量下载</h3>
+        <p>支持整个播放列表或频道一键批量下载，自动整理文件，省时省力</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">
+          <i class="fas fa-bolt"></i>
+        </div>
+        <h3>高速下载</h3>
+        <p>基于 yt-dlp 和 FFmpeg 强大内核，智能选择最佳源，下载速度更快更稳定</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">
+          <i class="fas fa-sync-alt"></i>
+        </div>
+        <h3>持续更新</h3>
+        <p>紧跟 YouTube 接口变化，定期更新维护，确保长期稳定可用</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 使用说明 -->
+  <section class="how-to" id="howto">
+    <div class="section-header">
+      <h2>🚀 三步上手</h2>
+      <p>无需复杂配置，新手也能轻松使用</p>
+    </div>
+    <div class="steps">
+      <div class="step">
+        <i class="fas fa-copy"></i>
+        <h3>复制链接</h3>
+        <p>在 YouTube 中打开想要下载的视频、播放列表或频道，复制地址栏链接</p>
+      </div>
+      <div class="step">
+        <i class="fas fa-paste"></i>
+        <h3>粘贴到软件</h3>
+        <p>打开 YD-YoutubeDownloader，将链接粘贴到输入框，选择需要的格式</p>
+      </div>
+      <div class="step">
+        <i class="fas fa-download"></i>
+        <h3>开始下载</h3>
+        <p>点击下载按钮，软件自动处理并保存到您的指定目录，完成！</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 技术依赖 -->
+  <section class="tech-stack" id="tech">
+    <div class="section-header">
+      <h2>🔧 技术支撑</h2>
+      <p>基于优秀开源项目构建，品质有保障</p>
+    </div>
+    <div class="tech-cards">
+      <div class="tech-card">
+        <i class="fas fa-cube"></i>
+        <span><strong>yt-dlp</strong> - 强大的视频下载引擎</span>
+      </div>
+      <div class="tech-card">
+        <i class="fas fa-film"></i>
+        <span><strong>FFmpeg</strong> - 专业音视频处理工具</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="cta">
+    <div class="cta-content">
+      <h2>准备好开始下载了吗？</h2>
+      <p>立即获取稳定版本，体验流畅的 YouTube 内容下载</p>
+      <a href="#" class="btn-white">
+        <i class="fas fa-cloud-download-alt"></i> 免费下载稳定版
+      </a>
+    </div>
+  </section>
+
+  <!-- 页脚 -->
+  <footer class="footer">
+    <div class="footer-links">
+      <a href="https://github.com/xinpenghan/YD-YoutubeDownloader" target="_blank">
+        <i class="fab fa-github"></i> GitHub 仓库
+      </a>
+      <a href="#">
+        <i class="fas fa-book"></i> 使用文档
+      </a>
+      <a href="#">
+        <i class="fas fa-bug"></i> 问题反馈
+      </a>
+      <a href="#">
+        <i class="fas fa-heart"></i> 支持项目
+      </a>
+    </div>
+    <p class="copyright">
+      © 2024 YD-YoutubeDownloader · 基于 MIT 协议开源 · 由 <a href="https://github.com/xinpenghan" target="_blank" style="color:var(--primary);text-decoration:none">@xinpenghan</a> 开发
+    </p>
+  </footer>
+
+  <script>
+    // 平滑滚动
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function(e) {
+        e.preventDefault();
+        const target = document.querySelector(this.getAttribute('href'));
+        if (target) {
+          target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      });
+    });
+
+    // 导航栏滚动效果
+    window.addEventListener('scroll', () => {
+      const navbar = document.querySelector('.navbar');
+      if (window.scrollY > 50) {
+        navbar.style.background = 'rgba(18, 18, 18, 0.98)';
+        navbar.style.boxShadow = '0 4px 20px rgba(0,0,0,0.3)';
+      } else {
+        navbar.style.background = 'rgba(18, 18, 18, 0.95)';
+        navbar.style.boxShadow = 'none';
+      }
+    });
+  </script>
+</body>
+</html>
