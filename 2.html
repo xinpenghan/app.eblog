@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SoftwareHub - 我们的产品</title>
+  <style>
+    :root {
+      --bg-color: #f8fafc;
+      --card-bg: #ffffff;
+      --text-main: #0f172a;
+      --text-sub: #64748b;
+      --primary: #3b82f6;
+      --primary-light: #eff6ff;
+      --github-bg: #24292f;
+      --github-hover: #11151a;
+      --download-bg: #10b981;
+      --download-hover: #059669;
+      --border: #e2e8f0;
+      --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+      --shadow-hover: 0 12px 24px -8px rgba(0, 0, 0, 0.12);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      background: var(--bg-color);
+      color: var(--text-main);
+      line-height: 1.6;
+      padding-bottom: 40px;
+    }
+
+    .container { max-width: 1140px; margin: 0 auto; padding: 0 24px; }
+
+    /* 🟢 方案三：渐变毛玻璃页头 */
+    header { background: #ffffff; position: relative; overflow: hidden; }
+    .hero-bg {
+      position: absolute; inset: 0;
+      background: linear-gradient(135deg, #e0f2fe 0%, #ede9fe 50%, #fce7f3 100%);
+    }
+    .hero-blob { position: absolute; border-radius: 50%; filter: blur(80px); opacity: 0.6; }
+    .blob-1 { width: 450px; height: 450px; background: #93c5fd; top: -120px; left: -100px; }
+    .blob-2 { width: 350px; height: 350px; background: #c4b5fd; bottom: -80px; right: -60px; }
+    .blob-3 { width: 200px; height: 200px; background: #fbcfe8; top: 40%; left: 60%; }
+
+    .hero-content { position: relative; z-index: 2; padding: 110px 0 90px; text-align: center; }
+    header h1 {
+      font-size: 3.5rem; font-weight: 800; color: #1e1b4b; margin-bottom: 14px; letter-spacing: -0.5px;
+    }
+    header p { color: #4b5563; font-size: 1.2rem; max-width: 620px; margin: 0 auto; line-height: 1.6; }
+
+    /* 🟢 右侧悬浮导航 */
+    .floating-nav {
+      position: fixed; top: 50%; transform: translateY(-50%); right: 28px; z-index: 1000;
+      background: rgba(255, 255, 255, 0.65); backdrop-filter: blur(14px); padding: 10px 8px;
+      border-radius: 50px; box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.5); transition: all 0.3s;
+    }
+    .floating-nav ul { list-style: none; display: flex; flex-direction: column; gap: 6px; align-items: center; }
+    .floating-nav a {
+      display: flex; align-items: center; justify-content: center; width: 44px; height: 44px;
+      text-decoration: none; color: #64748b; border-radius: 50%; font-size: 1.25rem; transition: 0.25s; position: relative; cursor: pointer;
+    }
+    .floating-nav a span {
+      position: absolute; right: 55px; background: #1e293b; color: #fff; padding: 6px 12px; border-radius: 8px;
+      font-size: 0.85rem; white-space: nowrap; opacity: 0; pointer-events: none; transform: translateX(10px); transition: 0.25s;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2); font-weight: 500;
+    }
+    .floating-nav a span::after {
+      content: ''; position: absolute; right: -4px; top: 50%; transform: translateY(-50%);
+      border-width: 4px 0 4px 4px; border-style: solid; border-color: transparent transparent transparent #1e293b;
+    }
+    .floating-nav a:hover span { opacity: 1; transform: translateX(0); }
+    .floating-nav a.active { background: var(--primary); color: white; box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4); }
+
+    /* 内容区块 & 卡片 */
+    .category-section { padding: 60px 0; }
+    .section-title {
+      font-size: 1.75rem; margin-bottom: 28px; padding-left: 16px;
+      border-left: 5px solid var(--primary); display: flex; align-items: center; gap: 10px;
+    }
+
+    .card-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+    .software-card {
+      background: var(--card-bg); border-radius: 16px; padding: 28px;
+      box-shadow: var(--shadow); transition: transform 0.3s, box-shadow 0.3s;
+      display: flex; flex-direction: column; border: 1px solid var(--border);
+    }
+    .software-card:hover { transform: translateY(-6px); box-shadow: var(--shadow-hover); }
+
+    .card-header { display: flex; align-items: center; gap: 14px; margin-bottom: 12px; }
+    .card-icon {
+      width: 52px; height: 52px; background: var(--primary-light); border-radius: 12px;
+      display: flex; align-items: center; justify-content: center; font-size: 26px;
+    }
+    .card-title { font-size: 1.35rem; font-weight: 600; color: var(--text-main); }
+    .card-desc { color: var(--text-sub); margin-bottom: 20px; flex-grow: 1; font-size: 0.95rem; line-height: 1.7; }
+
+    .card-actions { display: flex; gap: 12px; flex-wrap: wrap; }
+    .btn {
+      text-decoration: none; padding: 10px 0; border-radius: 10px; font-weight: 600;
+      font-size: 0.85rem; text-align: center; transition: all 0.2s; flex: 1; min-width: 100px;
+      letter-spacing: 0.5px; text-transform: uppercase;
+    }
+    .btn-github { background: var(--github-bg); color: white; }
+    .btn-github:hover { background: var(--github-hover); transform: translateY(-2px); }
+    .btn-download { background: var(--download-bg); color: white; }
+    .btn-download:hover { background: var(--download-hover); transform: translateY(-2px); }
+
+    footer {
+      background: #0f172a; color: #94a3b8; text-align: center; padding: 40px 0; margin-top: 60px; font-size: 0.9rem;
+    }
+
+    /* 📱 响应式适配 */
+    @media (max-width: 1024px) {
+      .card-grid { grid-template-columns: repeat(2, 1fr); }
+      .floating-nav { right: 16px; }
+    }
+    @media (max-width: 768px) {
+      header h1 { font-size: 2.5rem; }
+      header p { font-size: 1rem; }
+      .hero-content { padding: 80px 0 70px; }
+      .card-grid { grid-template-columns: 1fr; }
+      .floating-nav { right: 12px; padding: 8px 6px; }
+      .floating-nav a { width: 38px; height: 38px; font-size: 1.1rem; }
+      .floating-nav a span { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- 页头区域 -->
+  <header>
+    <div class="hero-bg">
+      <div class="hero-blob blob-1"></div>
+      <div class="hero-blob blob-2"></div>
+      <div class="hero-blob blob-3"></div>
+    </div>
+    <div class="container hero-content">
+      <h1>Software Hub</h1>
+      <p>探索我们精心打造的开源工具与网页应用，让开发更简单，让协作更高效。</p>
+    </div>
+  </header>
+
+  <!-- 右侧悬浮导航 -->
+  <nav class="floating-nav">
+    <ul>
+      <li><a href="#tools" class="active"><span>工具类</span>🛠️</a></li>
+      <li><a href="#web"><span>网页类</span>🌐</a></li>
+    </ul>
+  </nav>
+
+  <main class="container">
+    <!-- 🔧 工具类 -->
+    <section id="tools" class="category-section">
+      <h2 class="section-title">工具类</h2>
+      <div class="card-grid">
+        <article class="software-card">
+          <div class="card-header"><div class="card-icon">📦</div><h3 class="card-title">DataSync Pro</h3></div>
+          <p class="card-desc">轻量级跨平台数据同步工具，支持多端实时备份、增量更新与版本管理，保障数据安全不丢失。</p>
+          <div class="card-actions">
+            <a href="https://github.com" class="btn btn-github" target="_blank" rel="noopener">GitHub</a>
+            <a href="https://github.com/releases" class="btn btn-download" target="_blank" rel="noopener">Download</a>
+          </div>
+        </article>
+
+        <article class="software-card">
+          <div class="card-header"><div class="card-icon">⚡</div><h3 class="card-title">DevKit CLI</h3></div>
+          <p class="card-desc">面向开发者的命令行工具箱，集成构建、测试、部署与日志分析全流程，提升 10 倍开发效率。</p>
+          <div class="card-actions">
+            <a href="https://github.com" class="btn btn-github" target="_blank" rel="noopener">GitHub</a>
+            <a href="https://github.com/releases" class="btn btn-download" target="_blank" rel="noopener">Download</a>
+          </div>
+        </article>
+
+        <article class="software-card">
+          <div class="card-header"><div class="card-icon">🔍</div><h3 class="card-title">LogTrace</h3></div>
+          <p class="card-desc">分布式日志追踪系统，支持关键词高亮、异常自动告警与多维度数据过滤，快速定位线上问题。</p>
+          <div class="card-actions">
+            <a href="https://github.com" class="btn btn-github" target="_blank" rel="noopener">GitHub</a>
+            <a href="https://github.com/releases" class="btn btn-download" target="_blank" rel="noopener">Download</a>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <!-- 🌐 网页类 -->
+    <section id="web" class="category-section">
+      <h2 class="section-title">网页类</h2>
+      <div class="card-grid">
+        <article class="software-card">
+          <div class="card-header"><div class="card-icon">🌍</div><h3 class="card-title">SiteForge</h3></div>
+          <p class="card-desc">可视化网页搭建平台，拖拽组件即可生成高性能响应式网站，支持自定义主题与 SEO 优化。</p>
+          <div class="card-actions">
+            <a href="https://github.com" class="btn btn-github" target="_blank" rel="noopener">GitHub</a>
+            <a href="https://github.com/releases" class="btn btn-download" target="_blank" rel="noopener">Download</a>
+          </div>
+        </article>
+
+        <article class="software-card">
+          <div class="card-header"><div class="card-icon">📊</div><h3 class="card-title">DashView</h3></div>
+          <p class="card-desc">实时数据可视化仪表盘，支持多数据源接入、图表自定义与团队协作分享，让数据驱动决策。</p>
+          <div class="card-actions">
+            <a href="https://github.com" class="btn btn-github" target="_blank" rel="noopener">GitHub</a>
+            <a href="https://github.com/releases" class="btn btn-download" target="_blank" rel="noopener">Download</a>
+          </div>
+        </article>
+
+        <article class="software-card">
+          <div class="card-header"><div class="card-icon">📝</div><h3 class="card-title">DocFlow</h3></div>
+          <p class="card-desc">在线协作文档与知识库平台，支持 Markdown 实时渲染、版本历史回溯与权限精细管控。</p>
+          <div class="card-actions">
+            <a href="https://github.com" class="btn btn-github" target="_blank" rel="noopener">GitHub</a>
+            <a href="https://github.com/releases" class="btn btn-download" target="_blank" rel="noopener">Download</a>
+          </div>
+        </article>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="container">
+      <p>&copy; 2026 SoftwareHub. Open Source & Built with ❤️</p>
+    </div>
+  </footer>
+
+  <script>
+    // 滚动监听高亮逻辑
+    const sections = document.querySelectorAll('.category-section');
+    const navLinks = document.querySelectorAll('.floating-nav a');
+
+    window.addEventListener('scroll', () => {
+      let current = '';
+      const scrollPos = window.scrollY + window.innerHeight / 2.5;
+
+      sections.forEach(section => {
+        const sectionTop = section.offsetTop;
+        const sectionHeight = section.offsetHeight;
+        if (scrollPos >= sectionTop && scrollPos < sectionTop + sectionHeight) {
+          current = section.getAttribute('id');
+        }
+      });
+
+      // 滚动到底部时强制高亮最后一个分类
+      if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 100) {
+        current = sections[sections.length - 1]?.getAttribute('id') || current;
+      }
+
+      navLinks.forEach(link => {
+        link.classList.remove('active');
+        if (link.getAttribute('href').includes(current)) {
+          link.classList.add('active');
+        }
+      });
+    });
+  </script>
+</body>
+</html>

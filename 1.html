@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SoftwareHub - 极客暗黑风</title>
+  <style>
+    :root {
+      --bg-color: #f8fafc;
+      --card-bg: #ffffff;
+      --text-main: #0f172a;
+      --text-sub: #64748b;
+      --primary: #3b82f6;
+      --primary-light: #eff6ff;
+      --github-bg: #24292f;
+      --github-hover: #11151a;
+      --download-bg: #10b981;
+      --download-hover: #059669;
+      --border: #e2e8f0;
+      --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+      --shadow-hover: 0 12px 24px -8px rgba(0, 0, 0, 0.12);
+      --nav-bg: rgba(15, 23, 42, 0.8); /* 导航栏改为深色以适应深色页头 */
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body { font-family: system-ui, sans-serif; background: var(--bg-color); color: var(--text-main); line-height: 1.6; padding-bottom: 40px; }
+    .container { max-width: 1140px; margin: 0 auto; padding: 0 24px; }
+
+    /* --- 页头样式 (Dark Tech) --- */
+    header {
+      background: #0b1120;
+      padding: 100px 0 80px;
+      position: relative;
+      overflow: hidden;
+      text-align: center;
+    }
+    /* 点阵网格背景 */
+    header::before {
+      content: ''; position: absolute; inset: 0;
+      background-image: radial-gradient(#3b82f6 1px, transparent 1px);
+      background-size: 30px 30px; opacity: 0.15;
+    }
+    /* 顶部发光装饰 */
+    .glow-blob {
+      position: absolute; top: -100px; left: 50%; transform: translateX(-50%);
+      width: 600px; height: 300px; background: radial-gradient(ellipse, rgba(59,130,246,0.3) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    header h1 {
+      position: relative; font-size: 3.5rem; font-weight: 800; margin-bottom: 16px;
+      background: linear-gradient(to right, #ffffff, #94a3b8); -webkit-background-clip: text; color: transparent;
+    }
+    header p { position: relative; color: #94a3b8; font-size: 1.25rem; max-width: 600px; margin: 0 auto; }
+
+    /* --- 右侧悬浮导航 --- */
+    .floating-nav {
+      position: fixed; top: 50%; transform: translateY(-50%); right: 28px; z-index: 1000;
+      background: var(--nav-bg); backdrop-filter: blur(12px); padding: 10px 8px;
+      border-radius: 50px; box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    .floating-nav ul { list-style: none; display: flex; flex-direction: column; gap: 6px; align-items: center; }
+    .floating-nav a {
+      display: flex; align-items: center; justify-content: center; width: 44px; height: 44px;
+      text-decoration: none; color: #cbd5e1; border-radius: 50%; font-size: 1.25rem; transition: 0.25s; position: relative;
+    }
+    .floating-nav a span {
+      position: absolute; right: 55px; background: #1e293b; color: #fff; padding: 6px 12px; border-radius: 8px;
+      font-size: 0.85rem; white-space: nowrap; opacity: 0; pointer-events: none; transform: translateX(10px); transition: 0.25s;
+    }
+    .floating-nav a:hover span { opacity: 1; transform: translateX(0); }
+    .floating-nav a.active { background: var(--primary); color: white; box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4); }
+
+    /* --- 内容区 & 卡片 (保持原样) --- */
+    .category-section { padding: 60px 0; }
+    .section-title { font-size: 1.75rem; margin-bottom: 28px; padding-left: 16px; border-left: 5px solid var(--primary); }
+    .card-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+    .software-card { background: var(--card-bg); border-radius: 16px; padding: 28px; box-shadow: var(--shadow); transition: 0.3s; display: flex; flex-direction: column; border: 1px solid var(--border); }
+    .software-card:hover { transform: translateY(-6px); box-shadow: var(--shadow-hover); }
+    .card-header { display: flex; align-items: center; gap: 14px; margin-bottom: 12px; }
+    .card-icon { width: 52px; height: 52px; background: var(--primary-light); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 26px; }
+    .card-title { font-size: 1.35rem; font-weight: 600; }
+    .card-desc { color: var(--text-sub); margin-bottom: 20px; flex-grow: 1; font-size: 0.95rem; line-height: 1.7; }
+    .card-actions { display: flex; gap: 12px; }
+    .btn { text-decoration: none; padding: 10px 0; border-radius: 10px; font-weight: 600; font-size: 0.85rem; text-align: center; transition: 0.2s; flex: 1; text-transform: uppercase; }
+    .btn-github { background: var(--github-bg); color: white; }
+    .btn-github:hover { background: var(--github-hover); }
+    .btn-download { background: var(--download-bg); color: white; }
+    .btn-download:hover { background: var(--download-hover); }
+    footer { background: #0f172a; color: #94a3b8; text-align: center; padding: 40px 0; margin-top: 60px; font-size: 0.9rem; }
+    @media (max-width: 1024px) { .card-grid { grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width: 768px) { .card-grid { grid-template-columns: 1fr; } header h1 { font-size: 2.5rem; } .floating-nav { right: 12px; } }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="glow-blob"></div>
+    <div class="container">
+      <h1>Software<span style="color:#3b82f6">Hub</span></h1>
+      <p>专注打造高效、简洁的开发工具与网页应用生态</p>
+    </div>
+  </header>
+
+  <nav class="floating-nav">
+    <ul>
+      <li><a href="#tools" class="active"><span>工具类</span>🛠️</a></li>
+      <li><a href="#web"><span>网页类</span>🌐</a></li>
+    </ul>
+  </nav>
+
+  <main class="container">
+    <section id="tools" class="category-section"><h2 class="section-title">工具类</h2><div class="card-grid">
+      <article class="software-card"><div class="card-header"><div class="card-icon">📦</div><h3 class="card-title">DataSync Pro</h3></div><p class="card-desc">轻量级跨平台数据同步工具，支持多端实时备份、增量更新与版本管理。</p><div class="card-actions"><a href="https://github.com" class="btn btn-github" target="_blank">GitHub</a><a href="https://github.com/releases" class="btn btn-download" target="_blank">Download</a></div></article>
+      <article class="software-card"><div class="card-header"><div class="card-icon">⚡</div><h3 class="card-title">DevKit CLI</h3></div><p class="card-desc">面向开发者的命令行工具箱，集成构建、测试、部署与日志分析全流程。</p><div class="card-actions"><a href="https://github.com" class="btn btn-github" target="_blank">GitHub</a><a href="https://github.com/releases" class="btn btn-download" target="_blank">Download</a></div></article>
+      <article class="software-card"><div class="card-header"><div class="card-icon">🔍</div><h3 class="card-title">LogTrace</h3></div><p class="card-desc">分布式日志追踪系统，支持关键词高亮、异常自动告警与多维度数据过滤。</p><div class="card-actions"><a href="https://github.com" class="btn btn-github" target="_blank">GitHub</a><a href="https://github.com/releases" class="btn btn-download" target="_blank">Download</a></div></article>
+    </div></section>
+    <section id="web" class="category-section"><h2 class="section-title">网页类</h2><div class="card-grid">
+      <article class="software-card"><div class="card-header"><div class="card-icon">🌍</div><h3 class="card-title">SiteForge</h3></div><p class="card-desc">可视化网页搭建平台，拖拽组件即可生成高性能响应式网站。</p><div class="card-actions"><a href="https://github.com" class="btn btn-github" target="_blank">GitHub</a><a href="https://github.com/releases" class="btn btn-download" target="_blank">Download</a></div></article>
+      <article class="software-card"><div class="card-header"><div class="card-icon">📊</div><h3 class="card-title">DashView</h3></div><p class="card-desc">实时数据可视化仪表盘，支持多数据源接入、图表自定义与团队协作。</p><div class="card-actions"><a href="https://github.com" class="btn btn-github" target="_blank">GitHub</a><a href="https://github.com/releases" class="btn btn-download" target="_blank">Download</a></div></article>
+      <article class="software-card"><div class="card-header"><div class="card-icon">📝</div><h3 class="card-title">DocFlow</h3></div><p class="card-desc">在线协作文档与知识库平台，支持 Markdown 实时渲染与权限管控。</p><div class="card-actions"><a href="https://github.com" class="btn btn-github" target="_blank">GitHub</a><a href="https://github.com/releases" class="btn btn-download" target="_blank">Download</a></div></article>
+    </div></section>
+  </main>
+  <footer><p>&copy; 2026 SoftwareHub. Open Source & Built with ❤️</p></footer>
+  <script>
+    const sections = document.querySelectorAll('.category-section'); const navLinks = document.querySelectorAll('.floating-nav a');
+    window.addEventListener('scroll', () => { let current = ''; const scrollPos = window.scrollY + window.innerHeight / 3;
+      sections.forEach(s => { if (scrollPos >= s.offsetTop && scrollPos < s.offsetTop + s.offsetHeight) current = s.id; });
+      if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 50 && sections.length) current = sections[sections.length - 1].id;
+      navLinks.forEach(l => { l.classList.remove('active'); if (l.getAttribute('href').includes(current)) l.classList.add('active'); });
+    });
+  </script>
+</body>
+</html>
