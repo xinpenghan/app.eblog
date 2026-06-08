@@ -33,7 +33,7 @@
 
     .container { max-width: 1140px; margin: 0 auto; padding: 0 24px; }
 
-    /* 🟢 方案三：渐变毛玻璃页头 */
+    /* 🟢 页头：渐变毛玻璃风 */
     header { background: #ffffff; position: relative; overflow: hidden; }
     .hero-bg {
       position: absolute; inset: 0;
@@ -62,6 +62,7 @@
       display: flex; align-items: center; justify-content: center; width: 44px; height: 44px;
       text-decoration: none; color: #64748b; border-radius: 50%; font-size: 1.25rem; transition: 0.25s; position: relative; cursor: pointer;
     }
+    /* 悬浮提示 Tooltip */
     .floating-nav a span {
       position: absolute; right: 55px; background: #1e293b; color: #fff; padding: 6px 12px; border-radius: 8px;
       font-size: 0.85rem; white-space: nowrap; opacity: 0; pointer-events: none; transform: translateX(10px); transition: 0.25s;
@@ -128,7 +129,7 @@
     }
   </style>
 </head>
-<body>
+<body id="top"> <!-- 添加 ID 以便滚动定位 -->
 
   <!-- 页头区域 -->
   <header>
@@ -146,6 +147,14 @@
   <!-- 右侧悬浮导航 -->
   <nav class="floating-nav">
     <ul>
+      <!-- 🔺 新增：返回顶部按钮 (放在最上面) -->
+      <li>
+        <a href="#top" class="nav-top-btn" onclick="scrollToTop(event)">
+          <span>回到顶部</span>
+          ⬆️
+        </a>
+      </li>
+      
       <li><a href="#tools" class="active"><span>工具类</span>🛠️</a></li>
       <li><a href="#web"><span>网页类</span>🌐</a></li>
     </ul>
@@ -226,6 +235,12 @@
   </footer>
 
   <script>
+    // 平滑滚动到顶部函数
+    function scrollToTop(event) {
+      event.preventDefault();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
     // 滚动监听高亮逻辑
     const sections = document.querySelectorAll('.category-section');
     const navLinks = document.querySelectorAll('.floating-nav a');
